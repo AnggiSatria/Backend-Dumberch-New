@@ -1,33 +1,31 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
+const { v4: uuidv4 } = require("uuid");
+
 module.exports = (sequelize, DataTypes) => {
-  class profile extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
+  class Profile extends Model {
     static associate(models) {
-      // define association here
-      profile.belongsTo(models.user, {
-        as: 'user',
-        foreignKey: {
-          name: 'idUser'
-        }
-      });
+      Profile.belongsTo(models.User, { as: "user", foreignKey: "idUser" });
     }
   }
-  profile.init({
-    phone: DataTypes.STRING,
-    gender: DataTypes.STRING,
-    address: DataTypes.STRING,
-    image: DataTypes.STRING,
-    idUser: DataTypes.INTEGER
-  }, {
-    sequelize,
-    modelName: 'profile',
-  });
-  return profile;
+  Profile.init(
+    {
+      id: {
+        type: DataTypes.CHAR(36),
+        defaultValue: uuidv4,
+        allowNull: false,
+        primaryKey: true,
+      },
+      phone: DataTypes.STRING,
+      gender: DataTypes.STRING,
+      address: DataTypes.STRING,
+      image: DataTypes.STRING,
+      idUser: DataTypes.CHAR(36),
+    },
+    {
+      sequelize,
+      modelName: "Profile",
+    }
+  );
+  return Profile;
 };

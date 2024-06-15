@@ -1,51 +1,41 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
+const { v4: uuidv4 } = require("uuid");
+
 module.exports = (sequelize, DataTypes) => {
-  class product extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
+  class Product extends Model {
     static associate(models) {
-      // define association here
-      product.belongsTo(models.user, {
-        as: "user",
-        foreignKey: {
-          name: "idUser",
-        },
-      });
-
-      product.hasMany(models.transaction, {
+      Product.belongsTo(models.User, { as: "user", foreignKey: "idUser" });
+      Product.hasMany(models.Transaction, {
         as: "transactions",
-        foreignKey: {
-          name: "idProduct",
-        },
+        foreignKey: "idProduct",
       });
-
-      // belongs to many category
-      product.belongsToMany(models.category, {
+      Product.belongsToMany(models.Category, {
         as: "categories",
-        through: {
-          model: "categoryproduct",
-          as: "bridge",
-        },
+        through: models.CategoryProduct,
         foreignKey: "idProduct",
       });
     }
   }
-  product.init({
-    name: DataTypes.STRING,
-    desc: DataTypes.TEXT,
-    price: DataTypes.BIGINT,
-    image: DataTypes.STRING,
-    qty: DataTypes.INTEGER,
-    idUser: DataTypes.INTEGER
-  }, {
-    sequelize,
-    modelName: 'product',
-  });
-  return product;
+  Product.init(
+    {
+      id: {
+        type: DataTypes.CHAR(36),
+        defaultValue: uuidv4,
+        allowNull: false,
+        primaryKey: true,
+      },
+      name: DataTypes.STRING,
+      desc: DataTypes.TEXT,
+      price: DataTypes.BIGINT,
+      image: DataTypes.STRING,
+      qty: DataTypes.INTEGER,
+      idUser: DataTypes.CHAR(36),
+    },
+    {
+      sequelize,
+      modelName: "Product",
+    }
+  );
+  return Product;
 };

@@ -1,37 +1,33 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
+const { v4: uuidv4 } = require("uuid");
+
 module.exports = (sequelize, DataTypes) => {
-  class chat extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
+  class Chat extends Model {
     static associate(models) {
-      // define association here
-      chat.belongsTo(models.user, {
-        as: "sender",
-        foreignKey: {
-          name: "idSender",
-        },
-      });
-      chat.belongsTo(models.user, {
+      Chat.belongsTo(models.User, { as: "sender", foreignKey: "idSender" });
+      Chat.belongsTo(models.User, {
         as: "recipient",
-        foreignKey: {
-          name: "idRecipient",
-        },
+        foreignKey: "idRecipient",
       });
     }
   }
-  chat.init({
-    message: DataTypes.STRING,
-    idSender: DataTypes.INTEGER,
-    idRecipient: DataTypes.INTEGER
-  }, {
-    sequelize,
-    modelName: 'chat',
-  });
-  return chat;
+  Chat.init(
+    {
+      id: {
+        type: DataTypes.CHAR(36),
+        defaultValue: uuidv4,
+        allowNull: false,
+        primaryKey: true,
+      },
+      message: DataTypes.STRING,
+      idSender: DataTypes.CHAR(36),
+      idRecipient: DataTypes.CHAR(36),
+    },
+    {
+      sequelize,
+      modelName: "Chat",
+    }
+  );
+  return Chat;
 };

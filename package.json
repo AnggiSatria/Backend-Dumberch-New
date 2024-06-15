@@ -27,7 +27,8 @@
     "rupiah-format": "^1.0.0",
     "sequelize": "^6.18.0",
     "sequelize-cli": "^6.4.1",
-    "socket.io": "^4.4.1"
+    "socket.io": "^4.4.1",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"

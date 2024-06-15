@@ -1,45 +1,42 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
+const { v4: uuidv4 } = require("uuid");
+
 module.exports = (sequelize, DataTypes) => {
-  class transaction extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
+  class Transaction extends Model {
     static associate(models) {
-      // define association here
-      transaction.belongsTo(models.product, {
+      Transaction.belongsTo(models.Product, {
         as: "product",
-        foreignKey: {
-          name: "idProduct",
-        },
+        foreignKey: "idProduct",
       });
-      transaction.belongsTo(models.user, {
+      Transaction.belongsTo(models.User, {
         as: "buyer",
-        foreignKey: {
-          name: "idBuyer",
-        },
+        foreignKey: "idBuyer",
       });
-      transaction.belongsTo(models.user, {
+      Transaction.belongsTo(models.User, {
         as: "seller",
-        foreignKey: {
-          name: "idSeller",
-        },
+        foreignKey: "idSeller",
       });
     }
   }
-  transaction.init({
-    idProduct: DataTypes.INTEGER,
-    idBuyer: DataTypes.INTEGER,
-    idSeller: DataTypes.INTEGER,
-    price: DataTypes.BIGINT,
-    status: DataTypes.STRING
-  }, {
-    sequelize,
-    modelName: 'transaction',
-  });
-  return transaction;
+  Transaction.init(
+    {
+      id: {
+        type: DataTypes.CHAR(36),
+        defaultValue: uuidv4,
+        allowNull: false,
+        primaryKey: true,
+      },
+      idProduct: DataTypes.CHAR(36),
+      idBuyer: DataTypes.CHAR(36),
+      idSeller: DataTypes.CHAR(36),
+      price: DataTypes.BIGINT,
+      status: DataTypes.STRING,
+    },
+    {
+      sequelize,
+      modelName: "Transaction",
+    }
+  );
+  return Transaction;
 };

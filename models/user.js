@@ -1,68 +1,47 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
+const { v4: uuidv4 } = require("uuid");
+
 module.exports = (sequelize, DataTypes) => {
-  class user extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
+  class User extends Model {
     static associate(models) {
-      // define association here
-      user.hasOne(models.profile, {
-        as: "profile",
-        foreignKey: {
-          name: "idUser",
-        },
-      });
-
-      //hasMany to product model
-      user.hasMany(models.product, {
-        as: "products",
-        foreignKey: {
-          name: "idUser",
-        },
-      });
-
-      //hasMany association to transaction model
-      user.hasMany(models.transaction, {
+      User.hasOne(models.Profile, { as: "profile", foreignKey: "idUser" });
+      User.hasMany(models.Product, { as: "products", foreignKey: "idUser" });
+      User.hasMany(models.Transaction, {
         as: "buyerTransactions",
-        foreignKey: {
-          name: "idBuyer",
-        },
+        foreignKey: "idBuyer",
       });
-      user.hasMany(models.transaction, {
+      User.hasMany(models.Transaction, {
         as: "sellerTransactions",
-        foreignKey: {
-          name: "idSeller",
-        },
+        foreignKey: "idSeller",
       });
-
-      //hasMany association to chat model
-      user.hasMany(models.chat, {
+      User.hasMany(models.Chat, {
         as: "senderMessage",
-        foreignKey: {
-          name: "idSender",
-        },
+        foreignKey: "idSender",
       });
-      user.hasMany(models.chat, {
+      User.hasMany(models.Chat, {
         as: "recipientMessage",
-        foreignKey: {
-          name: "idRecipient",
-        },
+        foreignKey: "idRecipient",
       });
     }
   }
-  user.init({
-    email: DataTypes.STRING,
-    password: DataTypes.STRING,
-    name: DataTypes.STRING,
-    status: DataTypes.STRING
-  }, {
-    sequelize,
-    modelName: 'user',
-  });
-  return user;
+  User.init(
+    {
+      id: {
+        type: DataTypes.CHAR(36),
+        defaultValue: uuidv4,
+        allowNull: false,
+        primaryKey: true,
+      },
+      email: DataTypes.STRING,
+      password: DataTypes.STRING,
+      name: DataTypes.STRING,
+      status: DataTypes.STRING,
+    },
+    {
+      sequelize,
+      modelName: "User",
+    }
+  );
+  return User;
 };
