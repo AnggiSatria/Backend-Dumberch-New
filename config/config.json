@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "anggisatriaaa",
+    "password": "21031999As",
+    "database": "dumbmerch",
+    "host": "103.181.142.60",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "root",
+    "password": null,
+    "database": "database_test",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "root",
+    "password": null,
+    "database": "database_production",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  }
+}
