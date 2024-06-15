@@ -1,10 +1,8 @@
-const { profile } = require("../../models");
+const { Profile } = require("../../models");
 
 exports.getProfile = async (req, res) => {
   try {
-   
-
-    let data = await profile.findOne({
+    const profile = await Profile.findOne({
       where: {
         idUser: req.user.id,
       },
@@ -13,20 +11,27 @@ exports.getProfile = async (req, res) => {
       },
     });
 
-    data = JSON.parse(JSON.stringify(data));
+    if (!profile) {
+      return res.status(404).json({
+        status: "failed",
+        message: "Profile not found",
+      });
+    }
 
-    data = {
-      ...data,
-      image: data.image ? process.env.PATH_FILE + data.image : process.env.PATH_FILE + "Frame.png",
+    let data = {
+      ...profile.toJSON(), // Menggunakan toJSON untuk mengonversi objek Sequelize menjadi objek JavaScript biasa
+      image: profile.image
+        ? process.env.PATH_FILE + profile.image
+        : process.env.PATH_FILE + "Frame.png",
     };
 
-    res.send({
-      status: "success...",
+    res.status(200).json({
+      status: "success",
       data,
     });
   } catch (error) {
-    console.log(error);
-    res.send({
+    console.error(error);
+    res.status(500).json({
       status: "failed",
       message: "Server Error",
     });

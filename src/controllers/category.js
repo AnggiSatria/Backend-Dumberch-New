@@ -1,155 +1,164 @@
-const { product, user, category, productCategory } = require('../../models');
+const { Product, User, Category, CategoryProduct } = require("../../models");
 
 // Add Category
 exports.addCategory = async (req, res) => {
-    try{
+  try {
+    const data = req.body;
+    const newCategory = await Category.create(data);
 
-        const data = req.body;
-        const newCategory = await category.create(data);
-      
-        // let productData = await category.findOne({
-        //   where: {
-        //     id: newCategory.id,
-        //     name : newCategory.name
-        //   },
-        //   attributes: {
-        //     exclude: ['createdAt', 'updatedAt'],
-        //   },
-        // });
-      
-        res.send({
-          status: 'success',
-          data:{
-            category:{
-              id: newCategory.id,
-              name: newCategory.name,
-            }
-          }
-        });
-  } catch (error) {
-  console.log(error);
-  res.send({
-    status:'failed',
-    message: 'server error',
-    });
-  }
-};
-
-// get All Category
-exports.getCategories = async (req, res) => {
-    try {
-    const data = await category.findAll({
-        attributes:{
-        exclude:['createdAt','updatedAt']
-        }
-        });
-    
     res.send({
-        status: 'success',
-        data: {
-            categories: data
+      status: "success",
+      data: {
+        category: {
+          id: newCategory.id,
+          name: newCategory.name,
         },
-      });
-    } catch (error) {
-        console.log(error);
-        res.send({
-          status:'failed',
-          message: 'server error',
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      status: "failed",
+      message: "Server error",
     });
   }
 };
 
-// get Category details
+// Get All Categories
+exports.getCategories = async (req, res) => {
+  try {
+    const data = await Category.findAll({
+      attributes: {
+        exclude: ["createdAt", "updatedAt"],
+      },
+    });
+
+    res.send({
+      status: "success",
+      data: {
+        categories: data,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      status: "failed",
+      message: "Server error",
+    });
+  }
+};
+
+// Get Category details
 exports.getCategory = async (req, res) => {
-    try {
-      const id = req.params.id
-      const data = await category.findOne({
-        attributes:{
-            exclude:['createdAt','updatedAt']
-        },
-        where:{
-            id,
-        }
-      });
-  
-      res.send({
-        status: 'success',
-        data: {
-            category: {
-                id: data.id,
-                name: data.name
-            }
-        },
-      });
-    } catch (error) {
-      console.log(error);
-      req.send({
-        status:'failed',
-        message: 'server error',
+  try {
+    const { id } = req.params;
+    const data = await Category.findOne({
+      attributes: {
+        exclude: ["createdAt", "updatedAt"],
+      },
+      where: {
+        id,
+      },
+    });
+
+    if (!data) {
+      return res.status(404).send({
+        status: "failed",
+        message: "Category not found",
       });
     }
+
+    res.send({
+      status: "success",
+      data: {
+        category: {
+          id: data.id,
+          name: data.name,
+        },
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      status: "failed",
+      message: "Server error",
+    });
+  }
 };
 
-// Update category
+// Update Category
 exports.updateCategory = async (req, res) => {
-    try {
-        const id = req.params.id;
-        const data = req.body;
-        await category.update(req.body, {
-            where: {
-                id,
-            },
-        });
+  try {
+    const { id } = req.params;
+    const data = req.body;
+    const updated = await Category.update(data, {
+      where: {
+        id,
+      },
+    });
 
-        const updateData = await category.findOne({
-            attributes:{
-                exclude:['createdAt','updatedAt']
-            },
-            where:{
-                id,
-            }
-          });
-
-        res.send({
-            status: 'success',
-            data:{
-                category:{
-                id: updateData.id,
-                name: data.name,
-                }
-            }
-        });
-    } catch (error) {
-        console.log(error);
-        res.send({
-            status: 'failed',
-            message: 'server error',
-        });
+    if (!updated[0]) {
+      return res.status(404).send({
+        status: "failed",
+        message: "Category not found",
+      });
     }
+
+    const updatedData = await Category.findOne({
+      attributes: {
+        exclude: ["createdAt", "updatedAt"],
+      },
+      where: {
+        id,
+      },
+    });
+
+    res.send({
+      status: "success",
+      data: {
+        category: {
+          id: updatedData.id,
+          name: updatedData.name,
+        },
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      status: "failed",
+      message: "Server error",
+    });
+  }
 };
 
-// delete category
+// Delete Category
 exports.deleteCategory = async (req, res) => {
-    try {
-        const { id } = req.params;
+  try {
+    const { id } = req.params;
+    const deleted = await Category.destroy({
+      where: {
+        id,
+      },
+    });
 
-        await category.destroy({
-            where: {
-                id,
-            },
-        }),
-
-        res.send({
-            status: "success",
-            data: {
-                id: id
-            }
-        });
-    } catch (error) {
-        console.log(error);
-        res.send({
-            status: "failed",
-            message: "server error",
-        });
+    if (!deleted) {
+      return res.status(404).send({
+        status: "failed",
+        message: "Category not found",
+      });
     }
+
+    res.send({
+      status: "success",
+      data: {
+        id: id,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      status: "failed",
+      message: "Server error",
+    });
+  }
 };

@@ -15,12 +15,15 @@ module.exports = (sequelize, DataTypes) => {
   Category.init(
     {
       id: {
-        type: DataTypes.CHAR(36),
+        type: DataTypes.UUID,
         defaultValue: uuidv4,
         allowNull: false,
         primaryKey: true,
       },
-      name: DataTypes.STRING,
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
     },
     {
       sequelize,

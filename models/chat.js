@@ -5,28 +5,46 @@ const { v4: uuidv4 } = require("uuid");
 module.exports = (sequelize, DataTypes) => {
   class Chat extends Model {
     static associate(models) {
-      Chat.belongsTo(models.User, { as: "sender", foreignKey: "idSender" });
       Chat.belongsTo(models.User, {
-        as: "recipient",
+        foreignKey: "idSender",
+        as: "sender",
+      });
+      Chat.belongsTo(models.User, {
         foreignKey: "idRecipient",
+        as: "recipient",
       });
     }
   }
   Chat.init(
     {
       id: {
-        type: DataTypes.CHAR(36),
-        defaultValue: uuidv4,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
         allowNull: false,
         primaryKey: true,
       },
-      message: DataTypes.STRING,
-      idSender: DataTypes.CHAR(36),
-      idRecipient: DataTypes.CHAR(36),
+      message: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      idSender: {
+        type: DataTypes.UUID,
+        allowNull: false,
+      },
+      idRecipient: {
+        type: DataTypes.UUID,
+        allowNull: false,
+      },
+      createdAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+      },
     },
     {
       sequelize,
       modelName: "Chat",
+      tableName: "chats", // Pastikan tabel ini sesuai dengan nama tabel di database Anda
     }
   );
   return Chat;
