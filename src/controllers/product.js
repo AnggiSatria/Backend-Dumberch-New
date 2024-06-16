@@ -1,6 +1,7 @@
 const { Product, User, Category, CategoryProduct } = require("../../models");
+const { Op } = require("sequelize");
 
-// Add Product
+// Tambah Produk
 exports.addProduct = async (req, res) => {
   try {
     let { idCategory } = req.body;
@@ -59,10 +60,23 @@ exports.addProduct = async (req, res) => {
   }
 };
 
-// Get All Products
+// Ambil Semua Produk dengan pencarian kata kunci dan sorting
 exports.getProducts = async (req, res) => {
   try {
+    const { keyword, sort_by = "name", order = "ASC" } = req.query;
+    let whereCondition = {};
+
+    if (keyword) {
+      whereCondition = {
+        [Op.or]: [
+          { name: { [Op.like]: `%${keyword}%` } },
+          { desc: { [Op.like]: `%${keyword}%` } },
+        ],
+      };
+    }
+
     let data = await Product.findAll({
+      where: whereCondition,
       include: [
         {
           model: User,
@@ -77,6 +91,7 @@ exports.getProducts = async (req, res) => {
         },
       ],
       attributes: { exclude: ["createdAt", "updatedAt", "idUser"] },
+      order: [[sort_by, order.toUpperCase()]],
     });
 
     data = JSON.parse(JSON.stringify(data));
@@ -101,7 +116,7 @@ exports.getProducts = async (req, res) => {
   }
 };
 
-// Get Product details
+// Ambil Detail Produk
 exports.getProduct = async (req, res) => {
   try {
     const { id } = req.params;
@@ -140,7 +155,7 @@ exports.getProduct = async (req, res) => {
   }
 };
 
-// Update Product
+// Update Produk
 exports.updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
@@ -192,7 +207,7 @@ exports.updateProduct = async (req, res) => {
   }
 };
 
-// Delete Product
+// Hapus Produk
 exports.deleteProduct = async (req, res) => {
   try {
     const { id } = req.params;
