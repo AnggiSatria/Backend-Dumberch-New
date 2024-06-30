@@ -60,10 +60,16 @@ exports.addProduct = async (req, res) => {
   }
 };
 
-// Ambil Semua Produk dengan pencarian kata kunci dan sorting
+// Ambil Semua Produk dengan pencarian kata kunci, sorting, dan pagination
 exports.getProducts = async (req, res) => {
   try {
-    const { keyword, sort_by = "name", order = "ASC" } = req.query;
+    const {
+      keyword,
+      sort_by = "name",
+      order = "ASC",
+      page = 1,
+      limit = 10,
+    } = req.query;
     let whereCondition = {};
 
     if (keyword) {
@@ -75,7 +81,9 @@ exports.getProducts = async (req, res) => {
       };
     }
 
-    let data = await Product.findAll({
+    const offset = (page - 1) * limit;
+
+    let data = await Product.findAndCountAll({
       where: whereCondition,
       include: [
         {
@@ -92,9 +100,13 @@ exports.getProducts = async (req, res) => {
       ],
       attributes: { exclude: ["createdAt", "updatedAt", "idUser"] },
       order: [[sort_by, order.toUpperCase()]],
+      limit: parseInt(limit),
+      offset: offset,
     });
 
-    data = JSON.parse(JSON.stringify(data));
+    const totalPages = Math.ceil(data.count / limit);
+
+    data = JSON.parse(JSON.stringify(data.rows));
 
     data = data.map((item) => {
       item.image = process.env.PATH_FILE + item.image;
@@ -105,6 +117,8 @@ exports.getProducts = async (req, res) => {
       status: "success",
       data: {
         products: data,
+        totalPages: totalPages,
+        currentPage: parseInt(page),
       },
     });
   } catch (error) {
