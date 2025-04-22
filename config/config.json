@@ -1,26 +1,41 @@
 {
   "development": {
-    "username": "root",
-    "password": "",
+    "username": "neondb_owner",
+    "password": "npg_T5mxBHEJ7XKw",
     "database": "dumbmerch",
-    "host": "127.0.0.1",
-    "port": "3306",
-    "dialect": "mysql"
+    "host": "ep-proud-voice-a4po72iu-pooler.us-east-1.aws.neon.tech",
+    "dialect": "postgres",
+    "dialectOptions": {
+      "ssl": {
+        "require": true,
+        "rejectUnauthorized": false
+      }
+    }
   },
   "test": {
-    "username": "root",
-    "password": null,
+    "username": "neondb_owner",
+    "password": "npg_T5mxBHEJ7XKw",
     "database": "dumbmerch",
-    "host": "127.0.0.1",
-    "port": "3306",
-    "dialect": "mysql"
+    "host": "ep-proud-voice-a4po72iu-pooler.us-east-1.aws.neon.tech",
+    "dialect": "postgres",
+    "dialectOptions": {
+      "ssl": {
+        "require": true,
+        "rejectUnauthorized": false
+      }
+    }
   },
   "production": {
-    "username": "root",
-    "password": null,
-    "database": "dumbmerch",
-    "host": "127.0.0.1",
-    "port": "3306",
-    "dialect": "mysql"
+    "username": "neondb_owner",
+    "password": "npg_T5mxBHEJ7XKw",
+    "database": "neondb",
+    "host": "ep-damp-lab-a4ju0ynb-pooler.us-east-1.aws.neon.tech",
+    "dialect": "postgres",
+    "dialectOptions": {
+      "ssl": {
+        "require": true,
+        "rejectUnauthorized": false
+      }
+    }
   }
 }

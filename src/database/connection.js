@@ -1,9 +1,9 @@
-const Sequelize = require("sequelize");
-require("dotenv").config(); // Load environment variables from .env file
+const { Sequelize } = require("sequelize");
+require("dotenv").config();
 
-// Initialize Sequelize with DATABASE_URL from environment variables
-const sequelize = new Sequelize(process.env.DATABASE_URL, {
-  dialect: "mysql",
+// Initialize Sequelize with PROD_DATABASE_URL from environment variables
+const sequelize = new Sequelize(process.env.PROD_DATABASE_URL, {
+  dialect: "postgres",
   dialectOptions: {
     ssl: {
       require: true,
@@ -11,12 +11,14 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
     },
   },
   logging: console.log, // Log all SQL queries to console
-  freezeTableName: true, // Prevent Sequelize from pluralizing table names
+  define: {
+    freezeTableName: true, // Prevent Sequelize from pluralizing table names
+  },
   pool: {
-    max: 5, // Maximum number of connection in pool
-    min: 0, // Minimum number of connection in pool
-    acquire: 30000, // Maximum time, in milliseconds, that pool will try to get connection before throwing error
-    idle: 10000, // Maximum time, in milliseconds, that a connection can be idle before being released
+    max: 5, // Maximum number of connections in pool
+    min: 0, // Minimum number of connections in pool
+    acquire: 30000, // Max time in ms to acquire a connection before error
+    idle: 10000, // Max time in ms a connection can be idle before release
   },
 });
 
@@ -24,10 +26,10 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
 sequelize
   .authenticate()
   .then(() => {
-    console.log("Database connection has been established successfully.");
+    console.log("✅ Connected to PostgreSQL (Neon) successfully.");
   })
   .catch((err) => {
-    console.error("Unable to connect to the database:", err);
+    console.error("❌ Unable to connect to the database:", err);
   });
 
 const db = {};
