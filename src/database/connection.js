@@ -4,6 +4,7 @@ require("dotenv").config();
 // Initialize Sequelize with PROD_DATABASE_URL from environment variables
 const sequelize = new Sequelize(process.env.PROD_DATABASE_URL, {
   dialect: "postgres",
+  dialectModule: require('pg'),
   dialectOptions: {
     ssl: {
       require: true,
